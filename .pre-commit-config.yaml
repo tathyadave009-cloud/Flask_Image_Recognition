@@ -1,7 +1,19 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0  # Use the latest stable version
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=30000']
+
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: py -m pylint
+        language: system
+        types: [python]
+        files: ^(app|model)\.py$
+        args: ["--fail-under=8.0"]
