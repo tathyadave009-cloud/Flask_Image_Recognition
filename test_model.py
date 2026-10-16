@@ -1,15 +1,17 @@
-import os
+"""Tests for model loading, preprocessing, and prediction functions."""
 import pytest
 import numpy as np
-from keras.models import load_model
-from model import preprocess_img, predict_result  # Adjust based on your structure
+from model import preprocess_img, predict_result, model as loaded_model
+
 
 # Load the model before tests run
 @pytest.fixture(scope="module")
 def model():
     """Load the model once for all tests."""
-    model = load_model("digit_model.h5")  # Adjust path as needed
-    return model
+    if loaded_model is None:
+        pytest.skip("Keras model not loaded in this environment")
+    return loaded_model
+
 
 # Basic Tests
 
@@ -47,6 +49,7 @@ def test_invalid_image_path():
     with pytest.raises(FileNotFoundError):
         preprocess_img("invalid/path/to/image.jpeg")
 
+
 def test_image_shape_on_prediction(model):
     """Test the prediction output shape."""
     img_path = "test_images/5/Sign 5 (86).jpeg"  # Ensure the path is correct
@@ -55,6 +58,7 @@ def test_image_shape_on_prediction(model):
     # Ensure that the prediction output is an integer
     prediction = predict_result(processed_img)
     assert isinstance(prediction, (int, np.integer)), "The prediction should be an integer"
+
 
 def test_model_predictions_consistency(model):
     """Test that predictions for the same input are consistent."""
