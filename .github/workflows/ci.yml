@@ -33,4 +33,6 @@ jobs:
         run: python -m pylint app.py model.py --fail-under=8.0
 
       - name: Run Pytest
-        run: python -m pytest -v
+        run: |
+          python -m pytest -v 2>&1 | tee test_results.txt
+          cat test_results.txt >> $GITHUB_STEP_SUMMARY
